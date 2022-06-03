@@ -1,0 +1,142 @@
+package main
+
+import (
+	/*"bytes"
+	"log"
+	"net/http"
+	"encoding/json"
+	*/
+	"database/sql"
+	"fmt"
+
+	_ "github.com/lib/pq"
+)
+
+type SuccessResponse struct {
+	Success2 string
+	Success  bool `json:"success"`
+}
+
+type Data struct {
+	Id         int    // `json:"id"`
+	USER_ID    int    //`json:"user_id"`
+	FIRST_NAME string //`json:"first_name"`
+	LAST_NAME  string //`json:"last_name"`
+	BIIN       string //`json:"biin"`
+	EMAIL      string //`json:"email"`
+	PHONE      string //`json:"phone"`
+	PASSWRD    string //`json:"passwrd"`
+}
+type PostResponse struct {
+	Code    int    `json:"code"`
+	Type    string `json:"type"`
+	Message string `json:"message"`
+}
+
+func main() {
+	/*values := map[string]string{
+		"userId":    "0",
+		"biin":      "string",
+		"firstName": "string",
+		"lastName":  "string",
+		"password":  "string",
+		"phone":     "string",
+		"email":     "string",
+	}
+	json_data, err := json.Marshal((values))
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	resp, err := http.Post("https://petstore.swagger.io/v2/user", "application/json", bytes.NewBuffer(json_data))
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// body, _ := ioutil.ReadAll(resp.Body)
+	// fmt.Println("response Body:", string(body))
+	//var res PostResponse
+
+	var res PostResponse
+
+	fmt.Println(res)
+	json.NewDecoder(resp.Body).Decode(&res)
+
+	fmt.Println(res)
+	*/
+	connStr := "user=postgres password=1234 dbname=Test sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close() /*
+		result, err := db.Exec("insert into S_users (USER_ID,BIIN,FIRST_NAME,LAST_NAME,EMAIL,PHONE,PASSWRD) values ('1' , $1 , $2 , $3 ,$4 , $5, $6 )", "askj", "Alizhan", "Imangali", "ajk", "87072175939", "12345")
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(result.RowsAffected())*/
+
+	rows, err := db.Query("select * from S_Users")
+	if err != nil {
+		panic(err)
+	}
+
+	defer rows.Close()
+	products := []Data{}
+
+	/*	for rows.Next() {
+		d := Data{}
+		err := rows.Scan(&d.Id, &d.BIIN, &d.FIRST_NAME, &d.LAST_NAME, &d.EMAIL, &d.PASSWRD, &d.PHONE, &d.USER_ID)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		products = append(products, d)
+	}*/
+	if products != nil {
+		var res = SuccessResponse{"success:", true}
+		fmt.Println(res)
+	}
+	for _, d := range products {
+		fmt.Println(d.USER_ID)
+	}
+
+}
+
+/*
+func Conn() {
+	connStr := "user=postgres password=1234 dbname=Test sslmode=disabled"
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	result, err := db.Exec("insert into S_users (USER_ID,BIIN,FIRST_NAME,LAST_NAME,EMAIL,PHONE,EMAIL) values ('1' , $1 , $2)", "string", "string", "string", "string", "string", "string")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(result.LastInsertId())
+
+	rows, err := db.Query("select * from Products")
+	if err != nil {
+		panic(err)
+	}
+
+	defer rows.Close()
+	products := []Data{}
+
+	for rows.Next() {
+		d := Data{}
+		err := rows.Scan(&d.Id, &d.BIIN, &d.FIRST_NAME, &d.LAST_NAME, &d.EMAIL, &d.PASSWRD, &d.PHONE, &d.USER_ID)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		products = append(products, d)
+	}
+	for _, d := range products {
+		fmt.Println(d.USER_ID, d.FIRST_NAME, d.LAST_NAME, d.EMAIL)
+	}
+
+}*/
